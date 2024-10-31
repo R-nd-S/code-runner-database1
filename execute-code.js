@@ -5,13 +5,8 @@ const path = require('path');
 function runCode() {
   const code = document.getElementById("codeInput").value;
   // Replace `yourFunction` with the name of your JavaScript function
-  const result = yourFunction(code); 
+  const result = executeCode(code, 'python'); 
   document.getElementById("output").innerText = `Result: ${result}`;
-}
-
-// Sample function (replace with your own function logic)
-function yourFunction(input) {
-  return `You entered: ${input}`;
 }
 
 function executeCode(code, language) {
