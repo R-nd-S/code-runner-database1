@@ -2,11 +2,15 @@ const { exec } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-function runCode() {
+async function runCode() {
   const code = document.getElementById("codeInput").value;
-  // Replace `yourFunction` with the name of your JavaScript function
-  const result = executeCode(code, 'python'); 
-  document.getElementById("output").innerText = `Result: ${result}`;
+  try {
+    // Await the result of the executeCode Promise
+    const result = await executeCode(code, 'python');
+    document.getElementById("output").innerText = `Result: ${result}`;
+  } catch (error) {
+    document.getElementById("output").innerText = `Error: ${error}`;
+  }
 }
 
 function executeCode(code, language) {
