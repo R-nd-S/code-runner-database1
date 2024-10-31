@@ -1,63 +1,16 @@
-const { exec } = require('child_process');
-const fs = require('fs');
-const path = require('path'); // Ensure this is at the top
+async function loadPyodideAndRun() {
+  window.pyodide = await loadPyodide();  // Load Pyodide library
+}
 
-function runCode() {
+async function runCode() {
   const code = document.getElementById("codeInput").value;
-  executeCode(code, 'python')
-    .then((result) => {
-      document.getElementById("output").innerText = `Result: ${result}`;
-    })
-    .catch((error) => {
-      document.getElementById("output").innerText = `Error: ${error}`;
-    });
+  try {
+    const result = await pyodide.runPython(code);  // Run Python code
+    document.getElementById("output").innerText = `Result: ${result}`;
+  } catch (error) {
+    document.getElementById("output").innerText = `Error: ${error}`;
+  }
 }
 
-function executeCode(code, language) {
-  return new Promise((resolve, reject) => {
-    let filename;
-    let command;
-
-    // Create temporary files based on the language
-    switch (language) {
-      case 'python':
-        filename = path.join(__dirname, 'temp.py');
-        fs.writeFileSync(filename, code);
-        command = `python ${filename}`;
-        break;
-
-      case 'javascript':
-        filename = path.join(__dirname, 'temp.js');
-        fs.writeFileSync(filename, code);
-        command = `node ${filename}`;
-        break;
-
-      case 'cpp':
-        filename = path.join(__dirname, 'temp.cpp');
-        const executable = path.join(__dirname, 'temp.out');
-        fs.writeFileSync(filename, code);
-        command = `g++ ${filename} -o ${executable} && ${executable}`;
-        break;
-
-      default:
-        reject(new Error('Language not supported'));
-        return;
-    }
-
-    // Execute the command
-    exec(command, (error, stdout, stderr) => {
-      fs.unlinkSync(filename); // Delete the temp file after execution
-      if (language === 'cpp') {
-        fs.unlinkSync(path.join(__dirname, 'temp.out'));
-      }
-
-      if (error) {
-        reject(stderr || 'Execution error');
-      } else {
-        resolve(stdout);
-      }
-    });
-  });
-}
-
-module.exports = { executeCode, runCode };
+// Load Pyodide when the page loads
+window.addEventListener("load", loadPyodideAndRun);
