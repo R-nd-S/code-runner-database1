@@ -1,16 +1,16 @@
 const { exec } = require('child_process');
 const fs = require('fs');
-const path = require('path');
+const path = require('path'); // Ensure this is at the top
 
-async function runCode() {
+function runCode() {
   const code = document.getElementById("codeInput").value;
-  try {
-    // Await the result of the executeCode Promise
-    const result = await executeCode(code, 'python');
-    document.getElementById("output").innerText = `Result: ${result}`;
-  } catch (error) {
-    document.getElementById("output").innerText = `Error: ${error}`;
-  }
+  executeCode(code, 'python')
+    .then((result) => {
+      document.getElementById("output").innerText = `Result: ${result}`;
+    })
+    .catch((error) => {
+      document.getElementById("output").innerText = `Error: ${error}`;
+    });
 }
 
 function executeCode(code, language) {
