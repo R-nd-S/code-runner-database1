@@ -61,4 +61,4 @@ function executeCode(code, language) {
   });
 }
 
-module.exports = { executeCode };
+module.exports = { executeCode, runCode };
