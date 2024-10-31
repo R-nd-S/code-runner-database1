@@ -4,9 +4,16 @@ async function loadPyodideAndRun() {
 
 async function runCode() {
   const code = document.getElementById("codeInput").value;
+  
+  // Redirect output to a string
+  let output = '';
+  pyodide.globals.set('print', (...args) => {
+    output += args.join(' ') + '\n';  // Collect printed output
+  });
+
   try {
-    const result = await pyodide.runPython(code);  // Run Python code
-    document.getElementById("output").innerText = `Result: ${result}`;
+    await pyodide.runPython(code);  // Run Python code
+    document.getElementById("output").innerText = `Output:\n${output}`; // Show collected output
   } catch (error) {
     document.getElementById("output").innerText = `Error: ${error}`;
   }
